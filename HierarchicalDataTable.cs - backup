@@ -1,0 +1,108 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace WindowsFormsApp1
+{
+    enum DataLevel : int
+    {
+        Cycle=0,
+        Step=1,
+        Record=2
+    }
+
+    public class HierarchicalDataTable
+    {
+        private List<DataRow> _rows;                               
+        private List<HierarchicalDataTable> _children;
+        public bool HasChildNode => _children.Count > 0;
+        public List<DataRow> Rows => _rows;
+        private HierarchicalDataTable _parent = null;
+        bool? _isExpanded = null;                                   // null:没有子节点；false:有子节点但没展开;true:有子节点且已展开
+        private readonly int SPACENUM = 3;
+        public bool IsRoot { get ; set ; }                          // 区分根节点和子节点的操作
+
+        public HierarchicalDataTable(List<DataRow> sourceData)
+        {
+            _rows = sourceData;
+            IsRoot = true;
+            _children = new List<HierarchicalDataTable>();
+        }
+        private HierarchicalDataTable()             //子节点构造器，_rows为null，不记录数据，减少内存占用----->改为第1层子节点（Step）保留数据，第2层不保留？
+        {
+            _rows = null;                    
+            IsRoot = false;
+            _children = new List<HierarchicalDataTable>();
+        }
+
+        public void AddChild(List<DataRow> childData, int parentRowIndex)
+        {
+            if (parentRowIndex < 0 || parentRowIndex >= _rows.Count)
+                throw new IndexOutOfRangeException();
+
+            //创建子节点，设置其父节点
+            var child = new HierarchicalDataTable();
+            child._parent = this;
+            child._parent._isExpanded = true;
+            foreach (DataRow row in childData) 
+            {
+                row[0] = "".PadLeft(child.Level * SPACENUM, ' ') + row[0].ToString();
+            }
+
+            //找到根节点，在根节点添加数据
+            HierarchicalDataTable rootDt = GetRootDt();
+            if (parentRowIndex >= rootDt._rows.Count)
+                throw new IndexOutOfRangeException("根节点行数<目标行数");
+            rootDt._rows.InsertRange(parentRowIndex + 1, childData);
+            rootDt._rows[parentRowIndex][0] = "[-]" + rootDt._rows[parentRowIndex][0].ToString();   //根节点对应行添加展开图标
+
+            _children.Add(child);
+        }
+
+        private HierarchicalDataTable GetRootDt()
+        {
+            HierarchicalDataTable rootDt = this;
+            while (rootDt._parent != null)
+            {
+                rootDt= this._parent;
+            }
+            return rootDt;
+        }
+
+        //public void RemoveChild(int parentIndex)
+        //{
+        //    if (parentIndex < 0 || parentIndex >= _rows.Count)
+        //        throw new IndexOutOfRangeException();
+        //    //找到该行对应的子节点，删除他们
+
+
+        //    var child = _children[childIndex];
+        //    int startIndex = child.ParentIndex + 1;
+
+        //    _rows.RemoveRange(startIndex, child.RowCount);
+
+        //    _children.RemoveAt(childIndex);
+        //}
+
+
+        private int Level
+        {
+            get
+            {
+                HierarchicalDataTable rootDt = this;
+                int level = 0;
+                while (rootDt._parent != null)
+                {
+                    rootDt = this._parent;
+                    level++;
+                }
+                return level;
+            }
+        }
+
+    }
+}

@@ -1,0 +1,13 @@
+{
+  "endOfLine": "lf",
+  "lineLength": 120,
+  "indentChar": " ",
+  "indentSize": 2,
+  "useTabs": false,
+  "csharpNewLine": "preserve",
+  "csharpSpaceBetweenMembersInType": true,
+  "braces": {
+    "newLine": "preserve-single-line",
+    "allowInArrowFunction": true
+  }
+}
