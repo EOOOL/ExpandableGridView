@@ -11,9 +11,10 @@ namespace WindowsFormsApp1
 {
     enum DataLevel : int
     {
-        Cycle = 0,
-        Step = 1,
-        Record = 2
+        MainCycle = 0,
+        SmallCycle=1,
+        Step = 2,
+        Record = 3
     }
 
     public enum ExpandStatus
@@ -25,7 +26,7 @@ namespace WindowsFormsApp1
 
     public class HierarchicalDataTable
     {
-        private const string LEVELMARK = "LEVELMARK";
+        private const string LEVELMARK = "LEVELMARK";               //记录datatable属于哪个级别，从0（root）开始
         private List<DataRow> _rows;
         private List<HierarchicalDataTable> _children;
         public bool HasChildNode => _children.Count > 0;
@@ -33,6 +34,8 @@ namespace WindowsFormsApp1
         private HierarchicalDataTable _parent = null;
         bool? _isExpanded = null; // null:没有子节点；false:有子节点但没展开;true:有子节点且已展开
         private readonly int SPACENUM = 3;
+
+        //TODO:根据cycleIndex和stepindex找到对用子节点并添加到根节点rows中；
 
         public HierarchicalDataTable(DataTable srcDataTable)
         {
@@ -65,11 +68,10 @@ namespace WindowsFormsApp1
                 row[0] = "".PadLeft(level * SPACENUM, ' ') + row[0].ToString();
             }
 
-            //找到根节点，在根节点添加数据
-
+            //在根节点添加数据
             rootDt._rows.InsertRange(targetRowIndex + 1, childData.AsEnumerable().ToList());
-            ;
-            rootDt._rows[targetRowIndex][0] = "[-]" + rootDt._rows[targetRowIndex][0].ToString(); //根节点对应行添加展开图标
+            
+            rootDt._rows[targetRowIndex][0] = "[-]" + rootDt._rows[targetRowIndex][0].ToString().Replace("[+]", ""); //根节点对应行添加展开图标
 
             _children.Add(child);
         }

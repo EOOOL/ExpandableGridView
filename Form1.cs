@@ -34,24 +34,30 @@ namespace ExpandableGridView
                 .SetValue(dataGridView1, true, null);
             var cycleData = GetDataTable(60);
             rootDt = new HierarchicalDataTable(cycleData);
-            var tmp1 = GetDataTable(3);
-            var tmp2 = GetDataTable(4);
-            rootDt.AddChild(tmp1, 2);
-            rootDt.AddChild(tmp2, 3);
+            //var tmp1 = GetDataTable(3);
+            //var tmp2 = GetDataTable(4);
+            //rootDt.AddChild(tmp1, 2);
+            //rootDt.AddChild(tmp2, 3);
             for (int i = 0; i < cycleData.Rows.Count; i++)
             {
-                //cycleData.Rows[i][0] = $"[+]{cycleData.Rows[i][0]}";
+                ////cycleData.Rows[i][0] = $"[+]{cycleData.Rows[i][0]}";
                 DataTable cycleData1 = new DataTable();
                 if (i % 2 == 0)
                     cycleData1 = GetDataTable(6);
                 //主循环n有数据：
                 if (cycleData1 != null && cycleData1.Rows.Count > 0)
                 {
+                    //只加【+】
                     cycleData.Rows[i][0] = $"[+]{cycleData.Rows[i][0]}";
+
                 }
-                else {
+                else
+                {
                     cycleData.Rows[i][0] = $"   {cycleData.Rows[i][0]}";
                 }
+
+
+
             }
 
             dataGridView1.RowHeadersVisible = false;
@@ -162,14 +168,14 @@ namespace ExpandableGridView
                 // 判断点击是否落在"[+]"上
                 bool isPlusClicked =
                     e.X >= plusPosX && e.X <= plusPosX + (int)plusTextSize.Width - 10;  // TextRenderer.MeasureText 方法返回的宽度可能包含额外的边距或间距，因此与单纯的字符宽度存在一定差异（GPT）
-                                                                                        // 27寸显示器下测试，-10可以将范围限制在[+]内
+                                                                                        // 经测试，-10可以将范围限制在[+]内
 
                 if (isPlusClicked) 
                 {
-                    //查询数据并增加到树形结构中
-                    var tmp = GetDataTable(8);
+                    //找到当前行，及其在树形结构中的位置
 
-                
+
+                    
                 }
             }
 
@@ -196,6 +202,11 @@ namespace ExpandableGridView
                     MessageBox.Show("Clicked on '-'!");
                 }
             }
+        }
+
+        private void fillData()
+        {
+
         }
     }
 }

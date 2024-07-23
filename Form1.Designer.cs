@@ -43,7 +43,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(25, 12);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 62;
-            this.dataGridView1.Size = new System.Drawing.Size(1946, 985);
+            this.dataGridView1.Size = new System.Drawing.Size(1643, 497);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseClick);
             // 
